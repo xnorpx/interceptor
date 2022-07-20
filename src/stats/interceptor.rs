@@ -28,15 +28,31 @@ impl StatsInterceptor {
     }
 
     pub fn recv_stats_reader(&self, ssrc: u32) -> Option<RTPStatsReader> {
+        self.recv_stats_readers([ssrc].iter().copied())
+            .into_iter()
+            .next()
+    }
+
+    pub fn recv_stats_readers(&self, ssrcs: impl Iterator<Item = u32>) -> Vec<RTPStatsReader> {
         let lock = self.recv_streams.lock();
 
-        lock.get(&ssrc).map(|r| r.reader())
+        ssrcs
+            .filter_map(|ssrc| lock.get(&ssrc).map(|r| r.reader()))
+            .collect()
     }
 
     pub fn send_stats_reader(&self, ssrc: u32) -> Option<RTPStatsReader> {
+        self.send_stats_readers([ssrc].iter().copied())
+            .into_iter()
+            .next()
+    }
+
+    pub fn send_stats_readers(&self, ssrcs: impl Iterator<Item = u32>) -> Vec<RTPStatsReader> {
         let lock = self.send_streams.lock();
 
-        lock.get(&ssrc).map(|r| r.reader())
+        ssrcs
+            .filter_map(|ssrc| lock.get(&ssrc).map(|r| r.reader()))
+            .collect()
     }
 }
 
