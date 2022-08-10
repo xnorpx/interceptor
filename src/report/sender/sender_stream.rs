@@ -106,7 +106,7 @@ impl RTPWriter for SenderStream {
 #[derive(Default)]
 pub(crate) struct Counters {
     packets: u32,
-    octets: u32,
+    //octets: u32,
 }
 
 /// Wrapping counters used for generating [`rtcp::sender_report::SenderReport`]
